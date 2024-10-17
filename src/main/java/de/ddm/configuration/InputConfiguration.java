@@ -10,6 +10,7 @@ import lombok.Data;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -39,7 +40,15 @@ public class InputConfiguration {
 	}
 
 	public File[] getInputFiles() {
-		return new File(this.inputPath).listFiles();
+		File inputFolder = new File(this.inputPath);
+		if (!inputFolder.exists())
+			throw new RuntimeException("Input folder " + this.inputPath + " does not exists!");
+
+		File[] inputFiles = inputFolder.listFiles();
+		if ((inputFiles == null) || (inputFiles.length == 0))
+			throw new RuntimeException("Input folder " + this.inputPath + " is empty!");
+
+		return inputFiles;
 	}
 
 	public CSVReader createCSVReader(File inputFile) throws IOException {

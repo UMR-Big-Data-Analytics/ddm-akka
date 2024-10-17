@@ -8,7 +8,7 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
 import de.ddm.actors.Guardian;
 import de.ddm.serialization.AkkaSerializable;
-import de.ddm.singletons.DomainConfigurationSingleton;
+import de.ddm.singletons.OutputConfigurationSingleton;
 import de.ddm.structures.InclusionDependency;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -55,7 +55,7 @@ public class ResultCollector extends AbstractBehavior<ResultCollector.Message> {
 	private ResultCollector(ActorContext<Message> context) throws IOException {
 		super(context);
 
-		File file = new File(DomainConfigurationSingleton.get().getResultCollectorOutputFileName());
+		File file = new File(OutputConfigurationSingleton.get().getOutputFileName());
 		if (file.exists() && !file.delete())
 			throw new IOException("Could not delete existing result file: " + file.getName());
 		if (!file.createNewFile())
@@ -84,7 +84,7 @@ public class ResultCollector extends AbstractBehavior<ResultCollector.Message> {
 	}
 
 	private Behavior<Message> handle(ResultMessage message) throws IOException {
-		this.getContext().getLog().info("Received {} INDs!", message.getInclusionDependencies().size());
+//		this.getContext().getLog().info("Received {} INDs!", message.getInclusionDependencies().size());
 
 		for (InclusionDependency ind : message.getInclusionDependencies()) {
 			this.writer.write(ind.toString());

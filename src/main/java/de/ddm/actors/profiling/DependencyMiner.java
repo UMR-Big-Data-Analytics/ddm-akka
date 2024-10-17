@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -138,7 +139,7 @@ public class DependencyMiner extends AbstractBehavior<DependencyMiner.Message> {
 		for (ActorRef<InputReader.Message> inputReader : this.inputReaders)
 			inputReader.tell(new InputReader.ReadHeaderMessage(this.getContext().getSelf()));
 		for (ActorRef<InputReader.Message> inputReader : this.inputReaders)
-			inputReader.tell(new InputReader.ReadBatchMessage(this.getContext().getSelf()));
+			inputReader.tell(new InputReader.ReadBatchMessage(this.getContext().getSelf(), 10000));
 		this.startTime = System.currentTimeMillis();
 		return this;
 	}
@@ -148,16 +149,14 @@ public class DependencyMiner extends AbstractBehavior<DependencyMiner.Message> {
 		return this;
 	}
 
-	List<String[]> data = new ArrayList<>();
-
 	private Behavior<Message> handle(BatchMessage message) {
 		// Ignoring batch content for now ... but I could do so much with it.
 
 //		System.out.println(MemoryUtils.byteSizeOf(message.getBatch()));
 //		System.out.println(MemoryUtils.bytesMax() + "    " + MemoryUtils.bytesFree());
 
-		if (message.getBatch().size() != 0)
-			this.inputReaders.get(message.getId()).tell(new InputReader.ReadBatchMessage(this.getContext().getSelf()));
+		if (!message.getBatch().isEmpty())
+			this.inputReaders.get(message.getId()).tell(new InputReader.ReadBatchMessage(this.getContext().getSelf(), 10000));
 		return this;
 	}
 

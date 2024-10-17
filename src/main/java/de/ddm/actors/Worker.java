@@ -48,7 +48,10 @@ public class Worker extends AbstractBehavior<Worker.Message> {
 
 		this.workers = new ArrayList<>(numWorkers);
 		for (int id = 0; id < numWorkers; id++)
-			this.workers.add(context.spawn(DependencyWorker.create(), DependencyWorker.DEFAULT_NAME + "_" + id, DispatcherSelector.fromConfig("akka.worker-pool-dispatcher")));
+			this.workers.add(context.spawn(
+					DependencyWorker.create(),
+					DependencyWorker.DEFAULT_NAME + "_" + id,
+					DispatcherSelector.fromConfig("akka.worker-pool-dispatcher")));
 	}
 
 	/////////////////

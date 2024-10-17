@@ -10,7 +10,6 @@ import akka.actor.typed.javadsl.Receive;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import de.ddm.serialization.AkkaSerializable;
-import de.ddm.singletons.DomainConfigurationSingleton;
 import de.ddm.singletons.InputConfigurationSingleton;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,6 +43,7 @@ public class InputReader extends AbstractBehavior<InputReader.Message> {
 	public static class ReadBatchMessage implements Message {
 		private static final long serialVersionUID = -7915854043207237318L;
 		ActorRef<DependencyMiner.Message> replyTo;
+		int batchSize;
 	}
 
 	////////////////////////
@@ -71,7 +71,6 @@ public class InputReader extends AbstractBehavior<InputReader.Message> {
 	/////////////////
 
 	private final int id;
-	private final int batchSize = DomainConfigurationSingleton.get().getInputReaderBatchSize();
 	private final CSVReader reader;
 	private final String[] header;
 
@@ -94,8 +93,8 @@ public class InputReader extends AbstractBehavior<InputReader.Message> {
 	}
 
 	private Behavior<Message> handle(ReadBatchMessage message) throws IOException, CsvValidationException {
-		List<String[]> batch = new ArrayList<>(this.batchSize);
-		for (int i = 0; i < this.batchSize; i++) {
+		List<String[]> batch = new ArrayList<>(message.getBatchSize());
+		for (int i = 0; i < message.getBatchSize(); i++) {
 			String[] line = this.reader.readNext();
 			if (line == null)
 				break;
