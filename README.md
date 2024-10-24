@@ -1,5 +1,5 @@
 # ddm-akka
-Akka example and homework code for the "Big Data Systems" lecture.
+Akka example and homework code for the "Distributed Data Management" lecture.
 
 ## Requirements
 - Java Version >= 11
