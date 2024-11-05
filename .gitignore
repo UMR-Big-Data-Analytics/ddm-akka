@@ -39,5 +39,8 @@ release.properties
 *.ipr
 *.iws
 
+# MacOS
+.DS_Store
+
 # Application files
 results.txt
