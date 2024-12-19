@@ -15,7 +15,7 @@
 		<logback.version>1.2.13</logback.version>
 		<junit.version>4.13.2</junit.version>
 		<chill-akka.version>0.10.0</chill-akka.version>
-		<lombok.version>1.18.30</lombok.version>
+		<lombok.version>1.18.36</lombok.version>
 		<jcommander.version>1.82</jcommander.version>
 		<fastutil.version>8.5.13</fastutil.version>
 		<opencsv.version>5.9</opencsv.version>
