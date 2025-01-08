@@ -15,9 +15,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class LargeMessageProxy extends AbstractBehavior<LargeMessageProxy.Message> {
 
@@ -88,19 +86,26 @@ public class LargeMessageProxy extends AbstractBehavior<LargeMessageProxy.Messag
 
 	public static int MAX_MESSAGE_SIZE = 100000;
 
-	public static Behavior<Message> create(ActorRef<LargeMessage> parent) {
-		return Behaviors.setup(context -> new LargeMessageProxy(context, parent));
+	public static Behavior<Message> create(ActorRef<LargeMessage> parent, boolean enableParallelSending) {
+		return Behaviors.setup(context -> new LargeMessageProxy(context, parent, enableParallelSending));
 	}
 
-	private LargeMessageProxy(ActorContext<Message> context, ActorRef<LargeMessage> parent) {
+	private LargeMessageProxy(ActorContext<Message> context, ActorRef<LargeMessage> parent, boolean enableParallelSending) {
 		super(context);
 
 		this.parent = parent;
+		this.enableParallelSending = enableParallelSending;
 	}
 
 	/////////////////
 	// Actor State //
 	/////////////////
+
+	// The LMP can send multiple messages in parallel, but this requires the LMP to duplicate all these messages and,
+	// hence, requires much more memory. Parallel sends are, therefore, faster but also more memory intensive.
+	private final boolean enableParallelSending;
+
+	private final List<SendMessage> pendingSendMessages = new LinkedList<>();
 
 	private final ActorRef<LargeMessage> parent;
 
@@ -145,6 +150,11 @@ public class LargeMessageProxy extends AbstractBehavior<LargeMessageProxy.Messag
 	}
 
 	private Behavior<Message> handle(SendMessage message) {
+		if (!this.enableParallelSending && !this.pendingSends.isEmpty()) {
+			this.pendingSendMessages.add(message);
+			return this;
+		}
+
 		LargeMessage largeMessage = message.getMessage();
 
 		byte[] bytes = this.serialization.serialize(largeMessage).get();
@@ -186,8 +196,11 @@ public class LargeMessageProxy extends AbstractBehavior<LargeMessageProxy.Messag
 		byte[] nextBytes = Arrays.copyOfRange(bytes, startOffset, endOffset);
 		state.setOffset(endOffset);
 
-		if (endOffset == bytes.length)
+		if (endOffset == bytes.length) {
 			this.pendingSends.remove(senderTransmissionKey);
+			if (!this.pendingSendMessages.isEmpty())
+				this.getContext().getSelf().tell(this.pendingSendMessages.remove(0));
+		}
 
 		receiverProxy.tell(new BytesMessage(nextBytes, senderTransmissionKey, receiverTransmissionKey));
 		return this;

@@ -24,7 +24,8 @@ public class LargeMessageProxyTest {
 	public static class MyLargeMessage implements LargeMessageProxy.LargeMessage {
 		private static final long serialVersionUID = -6299751781749878256L;
 
-		private String content = "Hello World! This is some large message with a large string.";
+		private String content;
+		private ActorRef<LargeMessageProxy.Message> largeMessageProxy;
 
 		@Override
 		public boolean equals(Object o) {
@@ -48,10 +49,10 @@ public class LargeMessageProxyTest {
 
 		TestProbe<LargeMessageProxy.LargeMessage> probe = testKit.createTestProbe();
 
-		ActorRef<LargeMessageProxy.Message> senderLargeMessageProxy = testKit.spawn(LargeMessageProxy.create(probe.getRef()), "sender_" + LargeMessageProxy.DEFAULT_NAME);
-		ActorRef<LargeMessageProxy.Message> receiverLargeMessageProxy = testKit.spawn(LargeMessageProxy.create(probe.getRef()), "receiver_" + LargeMessageProxy.DEFAULT_NAME);
+		ActorRef<LargeMessageProxy.Message> senderLargeMessageProxy = testKit.spawn(LargeMessageProxy.create(probe.getRef(), true), "sender_" + LargeMessageProxy.DEFAULT_NAME);
+		ActorRef<LargeMessageProxy.Message> receiverLargeMessageProxy = testKit.spawn(LargeMessageProxy.create(probe.getRef(), true), "receiver_" + LargeMessageProxy.DEFAULT_NAME);
 
-		LargeMessageProxy.LargeMessage message = new MyLargeMessage();
+		LargeMessageProxy.LargeMessage message = new MyLargeMessage("Hello World! This is some large message with a large string.", senderLargeMessageProxy);
 
 		senderLargeMessageProxy.tell(new LargeMessageProxy.SendMessage(message, receiverLargeMessageProxy));
 
@@ -63,7 +64,7 @@ public class LargeMessageProxyTest {
 	public void testProtocol() {
 		TestProbe<LargeMessageProxy.LargeMessage> probe = testKit.createTestProbe();
 
-		ActorRef<LargeMessageProxy.Message> largeMessageProxy = testKit.spawn(LargeMessageProxy.create(probe.getRef()), LargeMessageProxy.DEFAULT_NAME);
+		ActorRef<LargeMessageProxy.Message> largeMessageProxy = testKit.spawn(LargeMessageProxy.create(probe.getRef(), true), LargeMessageProxy.DEFAULT_NAME);
 
 		LargeMessageProxy.LargeMessage message = new MyLargeMessage();
 
