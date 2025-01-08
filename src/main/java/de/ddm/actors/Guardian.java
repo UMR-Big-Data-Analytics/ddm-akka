@@ -2,13 +2,13 @@ package de.ddm.actors;
 
 import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
-import akka.actor.typed.PostStop$;
 import akka.actor.typed.javadsl.*;
 import akka.actor.typed.receptionist.Receptionist;
 import akka.actor.typed.receptionist.ServiceKey;
 import de.ddm.actors.patterns.Reaper;
 import de.ddm.configuration.SystemConfiguration;
 import de.ddm.serialization.AkkaSerializable;
+import de.ddm.singletons.ReaperSingleton;
 import de.ddm.singletons.SystemConfigurationSingleton;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -67,6 +67,8 @@ public class Guardian extends AbstractBehavior<Guardian.Message> {
 		this.timer = timer;
 
 		this.reaper = context.spawn(Reaper.create(), Reaper.DEFAULT_NAME);
+		ReaperSingleton.set(this.reaper);
+
 		this.master = this.isMaster() ? context.spawn(Master.create(), Master.DEFAULT_NAME) : null;
 		this.worker = context.spawn(Worker.create(), Worker.DEFAULT_NAME);
 
