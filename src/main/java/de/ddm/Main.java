@@ -22,7 +22,8 @@ public class Main {
 				waitForInput(">>> Press ENTER to start <<<");
 
 			guardian.tell(new Guardian.StartMessage());
-			 // This shutdown message must be moved to the place where you are actually done mining.
+
+			 // This shutdown message must be removed to avoid the shutdown of the actor system before any work has been done.
 			guardian.tell(new Guardian.ShutdownMessage());
 		}
 	}
