@@ -22,7 +22,8 @@ public class Main {
 				waitForInput(">>> Press ENTER to start <<<");
 
 			guardian.tell(new Guardian.StartMessage());
-
+			 // This shutdown message must be moved to the place where you are actually done mining.
+			guardian.tell(new Guardian.ShutdownMessage());
 		}
 	}
 
