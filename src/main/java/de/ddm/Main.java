@@ -23,9 +23,10 @@ public class Main {
 
 			guardian.tell(new Guardian.StartMessage());
 
-			waitForInput(">>> Press ENTER to exit <<<");
-
-			guardian.tell(new Guardian.ShutdownMessage());
+			if (config.isEnterShutdown()) {
+				waitForInput(">>> Press ENTER to exit <<<");
+				guardian.tell(new Guardian.ShutdownMessage());
+			}
 		}
 	}
 

@@ -18,6 +18,9 @@ public class CommandMaster extends Command {
 	@Parameter(names = {"-sp", "--startPaused"}, description = "Wait for some console input to start the discovery; useful, if we want to wait manually until all ActorSystems in the cluster are started (e.g. to avoid work stealing effects in performance evaluations)", required = false, arity = 1)
 	boolean startPaused = SystemConfigurationSingleton.get().isStartPaused();
 
+	@Parameter(names = {"-es", "--enterShutdown"}, description = "Wait for some console input to immediately end the discovery; useful for demo-ing purposes and to force shutdowns during testing.", required = false, arity = 1)
+	boolean enterShutdown = SystemConfigurationSingleton.get().isEnterShutdown();
+
 	@Parameter(names = {"-hm", "--hardMode"}, description = "Solve the hard version of the task", required = false, arity = 1)
 	boolean hardMode = SystemConfigurationSingleton.get().isHardMode();
 

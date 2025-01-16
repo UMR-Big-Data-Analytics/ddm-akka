@@ -25,20 +25,21 @@ Akka example and homework code for the "Distributed Data Management" lecture.
 
 3. Read the program documentation
   ```
-  java -jar target/ddm-akka-1.0.jar
+  java -jar target/ddm-akka.jar
   ```
 
 4. First run
   ```
-  java -jar target/ddm-akka-1.0.jar master
+  java -jar target/ddm-akka.jar master -es true
   ```
+The flag `-es true` is used only for demo-ing purposes. Once a solution is implemented, skip this flag and leave it to `false`. If the flag is set to true, the program is terminated by pressing `enter` on the console, but a working solution should end itself once it is done.
 
 5. Distributed run (locally on one machine)
   ```
   // Run a master
-  java -Xms2048m -Xmx2048m -jar target/ddm-akka-1.0.jar master -w 0
-  // Run a worker (repeat for multiple workers)
-  java -Xms2048m -Xmx2048m -jar target/ddm-akka-1.0.jar worker -w 1 
+  java -Xms2048m -Xmx2048m -jar target/ddm-akka.jar master -w 0
+  // Run a worker (repeat command in different terminals for multiple workers)
+  java -Xms2048m -Xmx2048m -jar target/ddm-akka.jar worker -w 1
   ```
 
 `-Xms` and `-Xmx` are options for the Java Virtual Machine [to configure initial and maximum heap size](https://www.ibm.com/docs/en/sdk-java-technology/8?topic=options-xms). To ensure that your program runs on the Pi cluster, make it no greater than two gigabytes (`-Xmx=2048m` or `-Xmx=2g`).
@@ -46,18 +47,18 @@ Akka example and homework code for the "Distributed Data Management" lecture.
 6. Distributed run (on multiple machines)
   ```
   // Run a master
-  java -Xms2048m -Xmx2048m -jar target/ddm-akka-1.0.jar master -w 0 -h <your-ip-address>
-  // Run a worker (repeat for multiple workers)
-  java -Xms2048m -Xmx2048m -jar target/ddm-akka-1.0.jar worker -w 1 -mh <master-host-ip> -h <your-ip-address>
+  java -Xms2048m -Xmx2048m -jar target/ddm-akka.jar master -w 0 -h <your-ip-address>
+  // Run a worker (repeat command on different computers for multiple workers)
+  java -Xms2048m -Xmx2048m -jar target/ddm-akka.jar worker -w 1 -mh <master-host-ip> -h <your-ip-address>
   ```
 
-**Note that you need to substitute `<your-ip-address>` and `<master-host-ip>` with your and the master's IP address, respectively.** You can use websites like [whatismyipaddress.com](https://whatismyipaddress.com/) or command-line utilities like `hostname -I` and `ifconfig` to get these IP addresses.
+**Note that you need to substitute `<your-ip-address>` and `<master-host-ip>` with the local node's and the master's IP address, respectively.** You can use websites like [whatismyipaddress.com](https://whatismyipaddress.com/) or command-line utilities like `hostname -I` and `ifconfig` to get these IP addresses.
 
 `-Xms` and `-Xmx` are options for the Java Virtual Machine [to configure initial and maximum heap size](https://www.ibm.com/docs/en/sdk-java-technology/8?topic=options-xms). To ensure that your program runs on the Pi cluster, make it no greater than two gigabytes (`-Xmx=2048m` or `-Xmx=2g`).
 
 ## Hints
 
-1. Run `java -jar target/ddm-akka-1.0.jar` without arguments to have a help text printed to your console. It will describe all parameters in detail.
+1. Run `java -jar target/ddm-akka.jar` without arguments to have a help text printed to your console. It will describe all parameters in detail.
 2. Use `java -Xms2048m -Xmx2048m` to restrict your program run to two gigabyte of memory. This ensures that it runs on a Pi cluster.
-3. Use `LargeMessageProxy` to send large messages.
-4. Use `MemoryUstils` to measure byte sizes and memory usage.
+3. Use `LargeMessageProxy` to send large messages, but pay attention to the extra memory this proxy pattern requires for sending messages.
+4. Use `MemoryUstils` to measure byte sizes and memory usage, but keep in mind that memory measurements in Java are very expensive.
