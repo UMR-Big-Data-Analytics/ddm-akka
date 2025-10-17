@@ -10,31 +10,59 @@ Akka example and homework code for the "Distributed Data Management" lecture.
   ```
   git clone https://github.com/UMR-Big-Data-Analytics/ddm-akka.git
   ```
+
+2. Get the Akka libraries
+In the latest versions of Akka, the license of Akka changed requiring use to obtain a token (free for development). 
+For this, create an account for [Akka](https://account.akka.io/) and get your token from [here](https://account.akka.io/token).
+Then, we need to add this token to the `~/.m2/settings.xml` file (Linux/Mac), `c:\Users\<username>\.m2`. If this file does not exist, create it.
+Add the following content to this file, replacing `#TOKEN` with your actual token:
+  ```xml
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <activeProfiles>
+        <activeProfile>akka</activeProfile>
+    </activeProfiles>
+    <profiles>
+        <profile>
+            <id>akka</id>
+            <repositories>
+                <repository>
+                    <id>akka-secure</id>
+                    <name>Akka Secure</name>
+                    <url>https://repo.akka.io/#TOKEN/secure</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+</settings>
+  ```
+
+Do not add the repository to the `pom.xml` file, as this would expose your token to everyone who has access to the `pom.xml` file.
         
-2. Decompress test data
+3. Decompress test data
   ```
   cd ddm-akka/data
   unzip TPCH.zip
   ```
 
-3. Build project with maven
+4. Build project with maven
   ```
   cd ..
   mvn package
   ```
 
-3. Read the program documentation
+5. Read the program documentation
   ```
   java -jar target/ddm-akka.jar
   ```
 
-4. First run
+6. First run
   ```
   java -jar target/ddm-akka.jar master -es true
   ```
 The flag `-es true` is used only for demo-ing purposes. Once a solution is implemented, skip this flag and leave it to `false`. If the flag is set to true, the program is terminated by pressing `enter` on the console, but a working solution should end itself once it is done.
 
-5. Distributed run (locally on one machine)
+7. Distributed run (locally on one machine)
   ```
   // Run a master
   java -Xms2048m -Xmx2048m -jar target/ddm-akka.jar master -w 0
@@ -44,7 +72,7 @@ The flag `-es true` is used only for demo-ing purposes. Once a solution is imple
 
 `-Xms` and `-Xmx` are options for the Java Virtual Machine [to configure initial and maximum heap size](https://www.ibm.com/docs/en/sdk-java-technology/8?topic=options-xms). To ensure that your program runs on the Pi cluster, make it no greater than two gigabytes (`-Xmx=2048m` or `-Xmx=2g`).
 
-6. Distributed run (on multiple machines)
+8. Distributed run (on multiple machines)
   ```
   // Run a master
   java -Xms2048m -Xmx2048m -jar target/ddm-akka.jar master -w 0 -h <your-ip-address>
