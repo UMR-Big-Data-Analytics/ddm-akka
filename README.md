@@ -12,7 +12,8 @@ Akka example and homework code for the "Distributed Data Management" lecture.
   ```
 
 2. Get the Akka libraries
-In the latest versions of Akka, the license of Akka changed requiring use to obtain a token (free for development). 
+
+The license of Akka requires the user to obtain an access token (free for development) to checkout the libraries. 
 For this, create an account for [Akka](https://account.akka.io/) and get your token from [here](https://account.akka.io/token).
 Then, we need to add this token to the `~/.m2/settings.xml` file (Linux/Mac), `c:\Users\<username>\.m2`. If this file does not exist, create it.
 Add the following content to this file, replacing `#TOKEN` with your actual token:
