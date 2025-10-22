@@ -3,7 +3,7 @@ Akka example and homework code for the "Distributed Data Management" lecture.
 
 ## Requirements
 - Java Version >= 21
-- Maven Compiler Version >= 3.14.1
+- Maven Compiler Version >= 3.9.11
 
 ## Getting started
 1. Clone repo
